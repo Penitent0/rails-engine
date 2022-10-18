@@ -22,6 +22,7 @@ RSpec.describe "Api::V1::Merchants Show", type: :request do
       merchant = JSON.parse(response.body, symbolize_names: true)
 
       expect(merchant).to be_a(Hash)
+      expect(merchant).to have_key(:data)
       expect(merchant[:data]).to be_a(Hash)
       expect(merchant[:data][:id]).to be_a(String)
       expect(merchant[:data][:type]).to eq('merchant')
