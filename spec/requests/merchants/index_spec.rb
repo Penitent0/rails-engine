@@ -37,7 +37,7 @@ RSpec.describe "Api::V1::Merchants", type: :request do
       merchants = JSON.parse(response.body, symbolize_names: true)
       
       merchants[:data].each do |merchant|
-        expect(merchant[:id]).to be_a(Integer)
+        expect(merchant[:id]).to be_a(String)
       end
     end
 
