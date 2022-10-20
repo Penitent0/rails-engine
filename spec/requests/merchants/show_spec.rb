@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Api::V1::Merchants Show", type: :request do
+RSpec.describe "Api::V1::Merchants#Show", type: :request do
   describe "GET /show" do
     it 'displays one merchant record successfully' do
       merchant_1 = create(:merchant)
@@ -28,6 +28,24 @@ RSpec.describe "Api::V1::Merchants Show", type: :request do
       expect(merchant[:data][:type]).to eq('merchant')
       expect(merchant[:data][:attributes]).to be_a(Hash)
       expect(merchant[:data][:attributes][:name]).to be_a(String)
+    end
+
+    it 'has sad path if merchant id cannot be found' do
+      get "/api/v1/merchants/9000" 
+
+      expect(response).to have_http_status(:not_found) 
+    end
+
+    it 'shows merchant associated with item' do
+      merchant = create(:merchant)
+      item = create(:item, merchant: merchant)
+      get "/api/v1/items/#{item.id}/merchant"
+
+      expect(response).to have_http_status(:success)
+
+      merchant_data = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant_data[:data][:id].to_i).to eq(merchant.id)
     end
   end
 end
