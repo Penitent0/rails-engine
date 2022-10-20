@@ -6,4 +6,9 @@ class Item < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :description
   validates_presence_of :unit_price
+
+  def self.find_all_items(search_params)
+    where("name ILIKE :search", search: "%#{search_params}%")
+    # .order(name: :asc)
+  end
 end

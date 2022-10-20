@@ -8,7 +8,7 @@ RSpec.describe "Api::V1::Merchants#Find", type: :request do
       merchant_3 = create(:merchant, name: "Larry")
       merchant_4 = create(:merchant, name: "Mark")
 
-      get "/api/v1/merchants/find?name=ark"
+      get "/api/v1/merchants/find", params: { name: "ark" }
 
       merchant = JSON.parse(response.body, symbolize_names: true)
 
@@ -22,7 +22,7 @@ RSpec.describe "Api::V1::Merchants#Find", type: :request do
       merchant_3 = create(:merchant, name: "Mary")
       merchant_4 = create(:merchant, name: "Harry")
 
-      get "/api/v1/merchants/find?name=arr"
+      get "/api/v1/merchants/find", params: { name: "arr" }
 
       merchant = JSON.parse(response.body, symbolize_names: true)
 

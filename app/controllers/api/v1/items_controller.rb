@@ -59,6 +59,22 @@ class Api::V1::ItemsController < ApplicationController
     item.destroy
   end
 
+  def find_all
+    begin
+      items = Item.all
+    rescue StandardError => e
+      return render json: { error: e.to_s },status: :not_found
+    end
+    if items.find_all_items(params[:name]).empty?
+      render json: { data: {
+        "#{params[:name]}": {
+          error: "Not found"
+        }}},status: :not_found
+    else
+      render json: ItemsSerializer.format_items_index(items.find_all_items(params[:name]))
+    end
+  end
+
   private 
   def item_params 
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
