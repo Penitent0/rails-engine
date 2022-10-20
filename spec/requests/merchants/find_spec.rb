@@ -49,7 +49,7 @@ RSpec.describe "Api::V1::Merchants#Find", type: :request do
 
       get "/api/v1/merchants/find", params: { name: "" }
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:bad_request)
     end
 
     it 'has sad path for no merchant found' do
