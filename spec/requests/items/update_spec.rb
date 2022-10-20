@@ -62,19 +62,13 @@ RSpec.describe "Api::V1::Items#Update", type: :request do
     end
 
     it 'can update with partial data' do
-      patch "/api/v1/items/#{item.id}", params: update_partial_item_params
+      patch "/api/v1/items/#{item.id}", params: { item: { unit_price: 10 } }
 
       expect(response).to have_http_status(:success)
     end
 
     it 'has sad path for item not updated' do
       patch "/api/v1/items/#{item.id}", params: update_wrong_item_params
-
-      expect(response).to have_http_status(:not_found)
-    end
-
-    it 'has sad path if no merchant id is present' do
-      patch "/api/v1/items/#{item.id}", params: update_no_merchant_id
 
       expect(response).to have_http_status(:not_found)
     end

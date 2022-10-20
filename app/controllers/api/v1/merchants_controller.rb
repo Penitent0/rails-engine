@@ -16,7 +16,7 @@ class Api::V1::MerchantsController < ApplicationController
         merchant = Merchant.find(params[:id])
       end
     rescue StandardError => e
-      return render json: { error: e.to_s }, status: :not_found
+      return render json: ErrorSerializer.errors(e),status: :not_found 
     end 
     render json: MerchantsSerializer.format_merchant_show(merchant)
   end
@@ -24,15 +24,18 @@ class Api::V1::MerchantsController < ApplicationController
   def find
     begin
       merchants = Merchant.all
-    rescue StandardError => e
-      return render json: { error: e.to_s },status: :not_found
+    rescue StandardError => e10
+      return render json: ErrorSerializer.errors(e),status: :not_found
     end
-    if merchants.find_one_merchant(params[:name]).nil?
+    if merchants.find_one_merchant(params[:name]).nil? 
       render json: { data: {
         "#{params[:name]}": {
           error: "Not found"
-        }}
+          }
+        }
       },status: :not_found
+    elsif params[:name] == "" || params[:name].nil?
+      render json: { data: [] },status: :bad_request
     else
       render json: MerchantsSerializer.format_merchant_show(merchants.find_one_merchant(params[:name]))
     end

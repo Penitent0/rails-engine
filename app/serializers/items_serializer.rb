@@ -29,4 +29,12 @@ class ItemsSerializer
       }
     }
   end
+
+  def self.empty_array(items)
+    {
+      data: [
+        
+      ]
+    }
+  end
 end
