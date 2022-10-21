@@ -32,7 +32,7 @@ class Api::V1::ItemsController < ApplicationController
     if item.save 
       render json: ItemsSerializer.format_item_show(item), status: :created
     else
-      render json: { error: item.errors }, status: :not_found
+      render json: ErrorSerializer.valid_fail(item.errors), status: :not_found
     end
   end
 
@@ -45,7 +45,7 @@ class Api::V1::ItemsController < ApplicationController
     if item.update(item_params)
       render json: ItemsSerializer.format_item_show(item), status: :ok
     else
-      render json: { errors: item.errors },status: :not_found
+      render json: ErrorSerializer.valid_fail(item.errors),status: :not_found
     end
   end
 
@@ -59,17 +59,39 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def find_all
-    begin
-      items = Item.all
-    rescue StandardError => e
-      return render json: ErrorSerializer.errors(e),status: :not_found
+    if params[:name].nil? && (params[:min_price].nil? && params[:max_price].nil?)
+      return render json: ErrorSerializer.bad_request, status: :bad_request
     end
-    if items.find_all_items(params[:name]).empty?
-      render json: ItemsSerializer.empty_array(items), status: :not_found
-    elsif params[:name] == "" || params[:name].nil?
-      render json: { data: [] },status: :bad_request
+    if params[:name] && (!params[:min_price].nil? || !params[:max_price].nil?)
+      return render json: { error: "cannot search for name and price" }, status: :bad_request
+    elsif params[:name] == ""
+      return render json: ErrorSerializer.bad_request, status: :bad_request
+    end
+    if !params[:min_price].nil? && !params[:max_price].nil?
+      if params[:min_price].to_i.positive? && params[:max_price].to_i.positive?
+        items = Item.find_all_by_price_min_max(params[:min_price], params[:max_price])
+      else
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
+      end
+    elsif !params[:min_price].nil?
+      if params[:min_price].to_i.positive? 
+        items = Item.find_all_by_price_min(params[:min_price])
+      else 
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
+      end
+    elsif !params[:max_price].nil?
+      if params[:max_price].to_i.positive?
+        items = Item.find_all_by_price_max(params[:max_price])
+      else
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
+      end
+    elsif !params[:name].nil?
+      items = Item.find_all_items(params[:name])
+    end
+    if items.empty?
+      render json:ErrorSerializer.bad_request,status: :bad_request
     else
-      render json: ItemsSerializer.format_items_index(items.find_all_items(params[:name]))
+      render json: ItemsSerializer.format_items_index(items)
     end
   end
 

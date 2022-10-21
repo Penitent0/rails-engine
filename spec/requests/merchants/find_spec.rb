@@ -39,6 +39,10 @@ RSpec.describe "Api::V1::Merchants#Find", type: :request do
       get "/api/v1/merchants/find", params: { name: "NOMATCH" }
 
       expect(response).to have_http_status(:not_found)
+
+      error = JSON.parse(response.body, symbolize_names: true)
+
+      expect(error[:error]).to include("NOMATCH")
     end
 
     it 'has sad path for no merchant match found' do
@@ -49,7 +53,7 @@ RSpec.describe "Api::V1::Merchants#Find", type: :request do
 
       get "/api/v1/merchants/find", params: { name: "" }
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:bad_request)
     end
 
     it 'has sad path for no merchant found' do
