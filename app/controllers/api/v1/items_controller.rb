@@ -32,7 +32,7 @@ class Api::V1::ItemsController < ApplicationController
     if item.save 
       render json: ItemsSerializer.format_item_show(item), status: :created
     else
-      render json: { error: item.errors }, status: :not_found
+      render json: ErrorSerializer.valid_fail(item.errors), status: :not_found
     end
   end
 
@@ -45,7 +45,7 @@ class Api::V1::ItemsController < ApplicationController
     if item.update(item_params)
       render json: ItemsSerializer.format_item_show(item), status: :ok
     else
-      render json: ErrorSerializer.update_fail(item.errors),status: :not_found
+      render json: ErrorSerializer.valid_fail(item.errors),status: :not_found
     end
   end
 
@@ -71,19 +71,19 @@ class Api::V1::ItemsController < ApplicationController
       if params[:min_price].to_i.positive? && params[:max_price].to_i.positive?
         items = Item.find_all_by_price_min_max(params[:min_price], params[:max_price])
       else
-        return render json: { error: "price must be positive" }, status: :bad_request
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
       end
     elsif !params[:min_price].nil?
       if params[:min_price].to_i.positive? 
         items = Item.find_all_by_price_min(params[:min_price])
       else 
-        return render json: { error: "price must be positive" }, status: :bad_request
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
       end
     elsif !params[:max_price].nil?
       if params[:max_price].to_i.positive?
         items = Item.find_all_by_price_max(params[:max_price])
       else
-        return render json: { error: "price must be positive" }, status: :bad_request
+        return render json: ErrorSerializer.incorrect_price, status: :bad_request
       end
     elsif !params[:name].nil?
       items = Item.find_all_items(params[:name])

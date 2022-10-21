@@ -1,25 +1,66 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# rails-engine - Rails API project by Ken Lenhart
 
-Things you may want to cover:
+## [Repo Link](https://github.com/Penitent0/rails-engine)
 
-* Ruby version
+## Directions after cloning 
 
-* System dependencies
+`bundle install`
 
-* Configuration
+`rails db:{drop,create,migrate,seed}`
 
-* Database creation
+`rails db:schema:dump`
 
-* Database initialization
+`rails s`
 
-* How to run the test suite
+## Endpoints available by navigating to localhost in browser:
 
-* Services (job queues, cache servers, search engines, etc.)
+**Get all Merchants**
 
-* Deployment instructions
+GET `http://localhost:3000/api/v1/merchants`
 
-* ...
-# rails-engine
+**Get one Merchant**
+
+GET `http://localhost:3000/api/v1/merchants/<merchant_id>`
+
+**Get all Merchant Items**
+
+GET `http://localhost:3000/api/v1/merchants/<merchant_id>/items`
+
+**Get all Items**
+
+GET `http://localhost:3000/api/v1/items`
+
+**Get one Item**
+
+GET `http://localhost:3000/api/v1/items/<item_id>`
+
+**Create/Delete Item**
+
+POST/DELETE `http://localhost:3000/api/v1/items`
+
+**Update Item**
+
+PUT `http://localhost:3000/api/v1/items/<item_id>`
+
+**Get Item's Merchant**
+
+GET `http://localhost:3000/api/v1/items/<item_id>/merchant`
+
+**Find Merchant by Name Fragment**
+
+GET `http://localhost:3000/api/v1/merchants/find?name=<fragment>`
+
+**Find all Items by Name Fragment**
+
+GET `http://localhost:3000/api/v1/items/find_all?name=<fragment>`
+
+**Find all Items by Min/Max Price**
+
+GET `http://localhost:3000/api/v1/items/find_all?min_price=<price>&max_price=<price>`
+
+
+
+
+

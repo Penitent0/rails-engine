@@ -149,5 +149,11 @@ RSpec.describe "Api::V1::Items#Find", type: :request do
 
       expect(response).to have_http_status(:bad_request)
     end
+
+    it 'returns bad request when no params are present' do
+      get "/api/v1/items/find_all"
+      
+      expect(response).to have_http_status(:bad_request)
+    end
   end
 end
